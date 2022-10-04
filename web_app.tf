@@ -4,13 +4,12 @@ locals {
   key_pair_name          = "AppServerA"
   load_balancer_arn      = module.create_load_balancer.load_balancer_arn
   load_balancer_dns_name = module.create_load_balancer.load_balancer_dns_name
-
 }
 module "create_efs_drive" {
   source = "./modules/efs"
-  depends_on = [
-    module.RDSSecurityGroup, module.create_private_subnets
-  ]
+  # depends_on = [
+  #   module.RDSSecurityGroup, module.create_private_subnets
+  # ]
 
   name            = "efs${local.name_sufix}"
   encrypted       = true
@@ -108,8 +107,7 @@ module "create_target_group" {
   path        = "/index.php"
   target_type = "instance"
   target_id   = local.load_balancer_arn
-  vpc_id      = local.vpc_id
-
+  vpc_id      = module.vpc_ig.vpc_id
 }
 
 module "create_auto_scaling_group" {
